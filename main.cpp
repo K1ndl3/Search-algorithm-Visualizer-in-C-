@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <iostream>
+#include <stack>
 #include <vector>
 #include <queue>
 #include <utility>
@@ -17,6 +18,7 @@ typedef std::vector<std::vector<Cell>> MATRIX;
 typedef std::pair<int, int> Coord;
 
 std::pair<bool, std::vector<Coord>> bfs(MATRIX matrix);
+std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix);
 bool isValid(int row, int col, int matrix_row = 10, int matrix_col = 10);
 std::vector<Coord> createPath(std::vector<std::vector<Coord>> parent, int gr, int gc);
 
@@ -29,7 +31,7 @@ int main() {
 
     maze[3][0] = Cell::WALL;
 
-    std::pair<bool, std::vector<Coord>> ans = bfs(maze);
+    std::pair<bool, std::vector<Coord>> ans = dfs(maze);
     for (int i = 0; i < ans.second.size(); i++) {
         std::cout << "r: " << ans.second[i].first << " c: " << ans.second[i].second  << '\n';
     }
@@ -87,6 +89,43 @@ std::vector<Coord> createPath(std::vector<std::vector<Coord>> parent, int gr, in
     }
 
     return answer;
+}
+
+
+std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix) {
+    std::stack<Coord> s;
+    std::vector<std::vector<Coord>> parent(NUM_ROW, std::vector<Coord>(NUM_COL, {-1,-1}));
+    std::set<Coord> visited;
+    int dir[4][2]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    s.push({0,0});
+    visited.insert({0,0});
+    while (!s.empty()) {
+        auto curr = s.top();
+        s.pop();
+        for (auto direction : dir) {
+            Coord child = {curr.first + direction[0], curr.second + direction[1]};
+            if (isValid(child.first, child.second) && visited.count(child) < 1) {
+                if (matrix[child.first][child.second] == Cell::GOAL) {
+                    auto answer = createPath(parent, 9, 9);
+                    return {true, answer};
+                }
+                if (matrix[child.first][child.second] == Cell::WALL) {
+                    continue;
+                }
+                visited.insert(child);
+                s.push(child);
+            }
+        }
+        // get the top
+        // pop
+        // for every single direction
+        //  child = top + direction
+        //  if child is valid
+        //      if child is goal -> process goal
+        //      if child is wall -> continue
+        //      mark child as visited and add to the stack
+    }
+    return {false, {}};
 }
 
 
