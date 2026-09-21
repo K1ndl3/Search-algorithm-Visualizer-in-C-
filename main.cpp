@@ -11,6 +11,12 @@ int main() {
     std::pair<bool, std::vector<Coord>> bfsPath = search::bfs(maze);
     printPath(dfsPath.second, "dfs");
     printPath(bfsPath.second, "bfs");
+    InitWindow(, int height, "searching alg")
+    while (!WindowShouldClose()) {
+        
+    }
+
+
     return 0;
 }
 /*
