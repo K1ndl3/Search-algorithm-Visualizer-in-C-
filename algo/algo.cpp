@@ -72,28 +72,29 @@ std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix) {
 }
 
 
-void bfsInit(searchSpace &ss, Coord start, MATRIX maze) {
+void init(searchSpace &ss, Coord start, MATRIX maze) {
     // mark the start as visited
     ss.visited.insert({start});
-    // push the start coord onto the queue
-    ss.q.emplace(start);
+    // push the start coord onto the back (BFS order)
+    ss.q.push_back(start);
     // set the search state's maze equal to the parameter maze
     ss.maze = maze;
 }
 
 std::pair<bool,std::string> bfsStep(searchSpace& ss, Coord goal) {
+    if (ss.q.empty()) return {false, "~goal"};
     // process all four directions at once but only process once child node at the time
-    // get the top of the queue
+    // get the front of the deque
     auto curr = ss.q.front();
-    // pop the top of the queue
-    ss.q.pop();
+    // pop the front of the deque
+    ss.q.pop_front();
     // create the direction arr
     int direction[4][2] = {{-1,0}, {1,0}, {0,1}, {0,-1}};
     // loop through all four directions
     for (auto dir : direction) {
         int nr = curr.first + dir[0];
         int nc = curr.second + dir[1];
-        // create the child node from the top node
+        // create the child node from the front node
         Coord child{nr, nc};
         // if the child is valid and has not been visisted yet
         if (isValid(nr, nc) && ss.visited.count(child) < 1) {
@@ -109,8 +110,8 @@ std::pair<bool,std::string> bfsStep(searchSpace& ss, Coord goal) {
             // mark the maze in the child coordinate as visited
             ss.maze[nr][nc] = Cell::VISITED;
             // mark the path in the parent
-            // push onto the queue
-            ss.q.push(child);
+            // push onto the back (BFS)
+            ss.q.push_back(child);
         }
     }
     return {false, "~goal"};
