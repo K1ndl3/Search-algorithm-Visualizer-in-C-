@@ -1,20 +1,31 @@
 #include "algo/algo.hpp"
 #include "raylib.h"
+#include "utility/utility.hpp"
 #include <vector>
+
+#define CELL_SIZE 48
+#define WINDOW_WIDTH (NUM_COL * CELL_SIZE)
+#define WINDOW_HEIGHT (NUM_ROW * CELL_SIZE)
+
+
+void drawMatrix(MATRIX& maze);
 
 int main() {
     MATRIX maze(NUM_ROW, std::vector<Cell>(NUM_COL, Cell::EMPTY));
     maze[0][0] = Cell::START;
     maze[9][9] = Cell::GOAL;
 
-    std::pair<bool, std::vector<Coord>> dfsPath = search::dfs(maze);
-    std::pair<bool, std::vector<Coord>> bfsPath = search::bfs(maze);
-    printPath(dfsPath.second, "dfs");
-    printPath(bfsPath.second, "bfs");
-    InitWindow(, int height, "searching alg")
+    
+    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "searching alg");
+    SetTargetFPS(20);
     while (!WindowShouldClose()) {
-        
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        EndDrawing();
     }
+
+    CloseWindow();
 
 
     return 0;
@@ -27,4 +38,4 @@ so the point is to use dfs, bfs, and A* to go from start to goal
 
 */
 
-// i need to change the bfs and dfs in such a way that it pops and 
+// 
