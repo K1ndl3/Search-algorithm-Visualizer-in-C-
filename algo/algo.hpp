@@ -15,13 +15,15 @@ namespace search {
         std::deque<Coord> q;
         std::set<Coord> visited;
         std::vector<std::vector<Coord>> parent =
-        std::vector<std::vector<Coord>>(NUM_ROW, std::vector<Coord>(NUM_COL, {-1, -1}));
+        std::vector<std::vector<Coord>>(Config::NUM_ROW, std::vector<Coord>(Config::NUM_COL, {-1, -1}));
         MATRIX maze;
+        Coord startCoord;
+        Coord endCoord;
     };
 
     void init(searchSpace& ss, Coord start, MATRIX maze);
-    std::pair<bool, std::string> dfsStep(searchSpace& ss, Coord goal);
-    std::pair<bool,std::string> bfsStep(searchSpace& ss, Coord goal);
+    std::pair<bool, std::string> dfsStep(searchSpace& ss);
+    std::pair<bool,std::string> bfsStep(searchSpace& ss);
 
     std::pair<bool, std::vector<Coord>> bfs(MATRIX matrix);
     std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix);

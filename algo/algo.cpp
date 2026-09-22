@@ -9,7 +9,7 @@ namespace search {
 std::pair<bool, std::vector<Coord>> bfs(MATRIX matrix) {
     // parent[r][c] = who discovered (r,c); {-1,-1} means none
     std::vector<std::vector<Coord>> parent(
-        NUM_ROW, std::vector<Coord>(NUM_COL, {-1, -1}));
+        Config::NUM_ROW, std::vector<Coord>(Config::NUM_COL, {-1, -1}));
 
     std::set<Coord> visited;
     std::queue<Coord> q;
@@ -44,7 +44,7 @@ std::pair<bool, std::vector<Coord>> bfs(MATRIX matrix) {
 
 std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix) {
     std::stack<Coord> s;
-    std::vector<std::vector<Coord>> parent(NUM_ROW, std::vector<Coord>(NUM_COL, {-1, -1}));
+    std::vector<std::vector<Coord>> parent(Config::NUM_ROW, std::vector<Coord>(Config::NUM_COL, {-1, -1}));
     std::set<Coord> visited;
     int dir[4][2]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     s.push({0, 0});
@@ -81,7 +81,7 @@ void init(searchSpace &ss, Coord start, MATRIX maze) {
     ss.maze = maze;
 }
 
-std::pair<bool,std::string> bfsStep(searchSpace& ss, Coord goal) {
+std::pair<bool,std::string> bfsStep(searchSpace& ss) {
     if (ss.q.empty()) return {false, "~goal"};
     // process all four directions at once but only process once child node at the time
     // get the front of the deque
@@ -118,7 +118,7 @@ std::pair<bool,std::string> bfsStep(searchSpace& ss, Coord goal) {
 }
 
 
-std::pair<bool, std::string> dfsStep(searchSpace& ss, Coord goal) {
+std::pair<bool, std::string> dfsStep(searchSpace& ss) {
     // if the deque is empty, goal was not reached
     // pop_front the top
     // set up directional array

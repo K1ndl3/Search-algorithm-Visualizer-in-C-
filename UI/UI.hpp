@@ -1,9 +1,10 @@
 #pragma once
-
+#include "../algo/algo.hpp"
+#include "../config.hpp"
 
 namespace UI {
-    struct screen {
-        int CELL_SIZE;
-        int SCREEN_WIDTH
-    };
+    
+    void run(search::searchSpace& ss);
+
+    void drawMaze(search::searchSpace& ss);
 }

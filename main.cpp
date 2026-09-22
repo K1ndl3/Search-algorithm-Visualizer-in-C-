@@ -1,32 +1,22 @@
+#include "UI/UI.hpp"
 #include "algo/algo.hpp"
 #include "raylib.h"
+#include "config.hpp"
 #include "utility/utility.hpp"
 #include <vector>
 
-#define CELL_SIZE 48
-#define WINDOW_WIDTH (NUM_COL * CELL_SIZE)
-#define WINDOW_HEIGHT (NUM_ROW * CELL_SIZE)
 
 
-void drawMatrix(MATRIX& maze);
+
 
 int main() {
-    MATRIX maze(NUM_ROW, std::vector<Cell>(NUM_COL, Cell::EMPTY));
+    MATRIX maze(Config::NUM_ROW, std::vector<Cell>(Config::NUM_COL, Cell::EMPTY));
     maze[0][0] = Cell::START;
     maze[9][9] = Cell::GOAL;
+    search::searchSpace ss;
+    search::init(ss, {0,0},maze);
 
-    
-    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "searching alg");
-    SetTargetFPS(20);
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(BLACK);
-
-        EndDrawing();
-    }
-
-    CloseWindow();
-
+    UI::run(ss);
 
     return 0;
 }
