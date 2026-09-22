@@ -114,7 +114,23 @@ std::pair<bool,std::string> bfsStep(searchSpace& ss, Coord goal) {
             ss.q.push_back(child);
         }
     }
-    return {false, "~goal"};
+    return {false, "step finished"};
+}
+
+
+std::pair<bool, std::string> dfsStep(searchSpace& ss, Coord goal) {
+    // if the deque is empty, goal was not reached
+    // pop_front the top
+    // set up directional array
+    // for every direction
+    // create a child node from the direction
+    // if child is valid
+        // mark the parent
+        // check if goal
+        // check if wall
+        // else push onto visited set
+        // change the maze
+        // push_front onto the queue
 }
 
 
