@@ -15,13 +15,13 @@ void printPath(std::vector<Coord> path, std::string type) {
     }
 }
 
-std::vector<Coord> createPath(std::vector<std::vector<Coord>> parent, int gr, int gc) {
+std::vector<Coord> createPath(std::vector<std::vector<Coord>> parent, int gr, int gc, MATRIX& maze) {
     Coord curr = {gr, gc};
     std::vector<Coord> answer;
-    answer.push_back(curr);
     while (curr.first != -1) {
-        curr = parent[curr.first][curr.second];
         answer.push_back(curr);
+        maze[curr.first][curr.second] = Cell::PATH;
+        curr = parent[curr.first][curr.second];
     }
 
     return answer;
@@ -38,6 +38,8 @@ Color cellColor(MATRIX &maze, Coord coord) {
             return GRAY;
         case Cell::START:
             return RED;
+        case Cell::PATH:
+            return GREEN;
         default:
             return BLACK;
     }

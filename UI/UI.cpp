@@ -1,17 +1,25 @@
 #include "./UI.hpp"
 #include <raylib.h>
+#include <iostream>
 
 void UI::run(search::searchSpace& ss) {
     SetTargetFPS(Config::FPS);
     InitWindow(Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Config::TITLE);
-
+    bool searching = true;
     while (!WindowShouldClose()) {
 
         BeginDrawing();
-
+    
         ClearBackground(BLACK);
         drawMaze(ss);
-        search::bfsStep(ss);
+        if (searching) {
+            auto res = search::dfsStep(ss);
+            if (res.first || res.second == "~goal") {
+                if (res.second == "~goal")
+                    std::cout << "path not found\n";
+                searching = false;
+            }
+        }
 
         EndDrawing();
     }

@@ -30,7 +30,7 @@ std::pair<bool, std::vector<Coord>> bfs(MATRIX matrix) {
             if (isValid(nr, nc) && !visited.count({nr, nc})) {
                 parent[nr][nc] = {r, c};
                 if (matrix[nr][nc] == Cell::GOAL) {
-                    auto path = createPath(parent, nr, nc);
+                    auto path = createPath(parent, nr, nc, matrix);
                     return {true, path};
                 }
                 if (matrix[nr][nc] == Cell::WALL) continue;
@@ -57,7 +57,7 @@ std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix) {
             if (isValid(child.first, child.second) && visited.count(child) < 1) {
                 parent[child.first][child.second] = {curr.first, curr.second};
                 if (matrix[child.first][child.second] == Cell::GOAL) {
-                    auto answer = createPath(parent, child.first, child.second);
+                    auto answer = createPath(parent, child.first, child.second, matrix);
                     return {true, answer};
                 }
                 if (matrix[child.first][child.second] == Cell::WALL) {
@@ -101,6 +101,7 @@ std::pair<bool,std::string> bfsStep(searchSpace& ss) {
             ss.parent[nr][nc] = curr;
             // check if the child node is the goal
             if (ss.maze[nr][nc] == Cell::GOAL) {
+                createPath(ss.parent, nr, nc, ss.maze);
                 return {true, "goal"};
             }
             // check is the wall
@@ -120,17 +121,36 @@ std::pair<bool,std::string> bfsStep(searchSpace& ss) {
 
 std::pair<bool, std::string> dfsStep(searchSpace& ss) {
     // if the deque is empty, goal was not reached
+    if (ss.q.empty()) return {false, "~goal"};
     // pop_front the top
+    Coord curr = ss.q.front();
+    ss.q.pop_front();
     // set up directional array
+    int direction[4][2] = {{-1,0}, {1,0}, {0,1}, {0,-1}};
     // for every direction
+    for (auto dir : direction) {
     // create a child node from the direction
-    // if child is valid
-        // mark the parent
-        // check if goal
-        // check if wall
-        // else push onto visited set
-        // change the maze
-        // push_front onto the queue
+        Coord child({curr.first + dir[0], curr.second + dir[1]});
+        // if child is valid
+        if (isValid(child.first, child.second) && ss.visited.count(child) < 1) {
+            // mark the parent
+            ss.parent[child.first][child.second] = curr;
+            // check if goal
+            if (ss.maze[child.first][child.second] == Cell::GOAL) {
+                createPath(ss.parent, child.first, child.second, ss.maze);
+                return {true, "goal"};
+            }
+            // check if wall
+            if (ss.maze[child.first][child.second] == Cell::WALL) continue;
+            // else push onto visited set
+            ss.visited.insert({child});
+            // change the maze
+            ss.maze[child.first][child.second] = Cell::VISITED;
+            // push_front onto the queue
+            ss.q.push_front(child);
+        }
+    }
+    return {false, "step finished"};
 }
 
 
