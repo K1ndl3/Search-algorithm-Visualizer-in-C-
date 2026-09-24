@@ -6,18 +6,40 @@ void UI::run(search::searchSpace& ss) {
     SetTargetFPS(Config::FPS);
     InitWindow(Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Config::TITLE);
     bool searching = true;
+    UI_SETTING uiSetting{};
     while (!WindowShouldClose()) {
 
         BeginDrawing();
-    
+
+        // create a switch case:
+            // setting state
+                // draw the setting screen
+                // building state
+                // set the goal, start, and walls
+                // searching state
+                // searching alg will run
+                
         ClearBackground(BLACK);
-        drawMaze(ss);
-        if (searching) {
-            auto res = search::dfsStep(ss);
-            if (res.first || res.second == "~goal") {
-                if (res.second == "~goal")
-                    std::cout << "path not found\n";
-                searching = false;
+        if (uiSetting.currState == State::setting) {
+            settingsPage(uiSetting);
+
+        } else {
+            drawMaze(ss);
+            if (searching) {
+                std::pair<bool, std::string> res;
+                if (uiSetting.searchAlg == algorithm::bfs) {
+                    res = search::bfsStep(ss);
+                } else if (uiSetting.searchAlg == algorithm::dfs) {
+                    res = search::dfsStep(ss);
+                } else {
+                    // do nothing for now
+                    continue;
+                }
+                if (res.first || res.second == "~goal") {
+                    if (res.second == "~goal")
+                        std::cout << "path not found\n";
+                    searching = false;
+                }
             }
         }
 
@@ -35,5 +57,13 @@ void UI::drawMaze(search::searchSpace &ss) {
             Color color = cellColor(ss.maze, {row,col});
             DrawRectangle(posX, posY, Config::CELL_SIZE - 1, Config::CELL_SIZE - 1, color);
         }
+    }
+}
+
+void UI::settingsPage(UI::UI_SETTING& setting) {
+    DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, GRAY);
+    // draw the options on the screen
+    if (IsKeyPressed(KEY_ENTER)) {
+        setting.currState = State::searching;
     }
 }

@@ -27,5 +27,3 @@ so the point is to use dfs, bfs, and A* to go from start to goal
 
 
 */
-
-// 
