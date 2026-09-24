@@ -63,7 +63,22 @@ void UI::drawMaze(search::searchSpace &ss) {
 void UI::settingsPage(UI::UI_SETTING& setting) {
     DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, GRAY);
     // draw the options on the screen
-    if (IsKeyPressed(KEY_ENTER)) {
-        setting.currState = State::searching;
+    if (IsKeyPressed(KEY_A)) {
+        setting.searchAlg = algorithm::bfs;
+        setting.isSearching = true;
+    DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, RED);
+
+    }
+    if (IsKeyPressed(KEY_B)){
+        setting.searchAlg = algorithm::dfs;
+        setting.isSearching = true;
+    DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, RED);
+
+    } 
+    // show that enter is now 
+    if (setting.isSearching) { 
+        if (IsKeyPressed(KEY_ENTER)) {
+            setting.currState = State::searching;
+        }
     }
 }
