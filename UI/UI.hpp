@@ -15,11 +15,18 @@ namespace UI {
         building,
         searching
     };
+
+    enum buildingChoice {
+        start,
+        goal,
+        wall
+    };
     
     struct UI_SETTING{
         bool isSearching = false;
         algorithm searchAlg;
-        State currState = State::setting;
+        State currState = State::building;
+        buildingChoice bChoice;
     };
     
     void run(search::searchSpace& ss);
@@ -27,6 +34,8 @@ namespace UI {
     void drawMaze(search::searchSpace& ss);
 
     void settingsPage(UI_SETTING& setting);
+
+    void buildingPage(UI_SETTING& setting, search::searchSpace& ss);
 }
 
 

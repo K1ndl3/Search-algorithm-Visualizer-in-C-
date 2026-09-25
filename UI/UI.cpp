@@ -4,7 +4,7 @@
 
 void UI::run(search::searchSpace& ss) {
     SetTargetFPS(Config::FPS);
-    InitWindow(Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Config::TITLE);
+    InitWindow(Config::SCREEN_WIDTH + 500, Config::SCREEN_HEIGHT, Config::TITLE);
     bool searching = true;
     UI_SETTING uiSetting{};
     while (!WindowShouldClose()) {
@@ -23,7 +23,11 @@ void UI::run(search::searchSpace& ss) {
         if (uiSetting.currState == State::setting) {
             settingsPage(uiSetting);
 
-        } else {
+        } else if (uiSetting.currState == State::building) {
+            buildingPage(uiSetting, ss);
+            // create the grid to draw
+            // the flow will be draw grid -> select alg ->search
+        }else {
             drawMaze(ss);
             if (searching) {
                 std::pair<bool, std::string> res;
@@ -62,6 +66,9 @@ void UI::drawMaze(search::searchSpace &ss) {
 
 void UI::settingsPage(UI::UI_SETTING& setting) {
     DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, GRAY);
+    DrawText("1. Press A and then Enter to run BFS", 1, 1, 30, WHITE);
+    DrawText("2. Press B and then Enter to run DFS", 1, 35, 30, WHITE);
+
     // draw the options on the screen
     if (IsKeyPressed(KEY_A)) {
         setting.searchAlg = algorithm::bfs;
@@ -81,4 +88,22 @@ void UI::settingsPage(UI::UI_SETTING& setting) {
             setting.currState = State::searching;
         }
     }
+}
+
+void UI::buildingPage(UI_SETTING& setting, search::searchSpace& ss) {
+    int pageOffset = 900;
+    Color aColor = (setting.bChoice == UI::buildingChoice::start) ? YELLOW : WHITE;
+    Color bColor = (setting.bChoice == UI::buildingChoice::goal) ? YELLOW : WHITE;
+    Color cColor = (setting.bChoice == UI::buildingChoice::wall) ? YELLOW : WHITE;
+
+    if (IsKeyPressed(KEY_A)) setting.bChoice = UI::buildingChoice::start;
+    if (IsKeyPressed(KEY_B)) setting.bChoice = UI::buildingChoice::goal;
+    if (IsKeyPressed(KEY_C)) setting.bChoice = UI::buildingChoice::wall;
+
+    DrawRectangle(0, 0, Config::SCREEN_WIDTH + pageOffset, Config::SCREEN_HEIGHT, GRAY);
+    DrawText("1. Press A to add start cell", Config::SCREEN_WIDTH, 1, 30, aColor);
+    DrawText("2. Press B to add goal cell", Config::SCREEN_WIDTH, 35, 30, bColor);
+    DrawText("3. Press C to add start wall", Config::SCREEN_WIDTH, 65, 30, cColor);
+    
+    drawMaze(ss);
 }
