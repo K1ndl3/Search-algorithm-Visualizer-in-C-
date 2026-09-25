@@ -23,6 +23,7 @@ bool isValid(int row, int col, int matrix_row = Config::NUM_ROW, int matrix_col 
 void printPath(std::vector<Coord> path, std::string type);
 std::vector<Coord> createPath(std::vector<std::vector<Coord>> parent, int gr, int gc, MATRIX& maze);
 Color cellColor(MATRIX& maze, Coord coord);
-Coord getCoord(Vector2 mousePos);
+Coord getCell(Vector2 mousePos);
+bool isClickInBounds();
 
 #endif

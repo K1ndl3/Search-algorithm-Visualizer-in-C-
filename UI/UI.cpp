@@ -65,28 +65,24 @@ void UI::drawMaze(search::searchSpace &ss) {
 }
 
 void UI::settingsPage(UI::UI_SETTING& setting) {
-    DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, GRAY);
-    DrawText("1. Press A and then Enter to run BFS", 1, 1, 30, WHITE);
-    DrawText("2. Press B and then Enter to run DFS", 1, 35, 30, WHITE);
+    Color aColor = (setting.isSearching && setting.searchAlg == algorithm::bfs) ? YELLOW : WHITE;
+    Color bColor = (setting.isSearching && setting.searchAlg == algorithm::dfs) ? YELLOW : WHITE;
 
-    // draw the options on the screen
-    if (IsKeyPressed(KEY_A)) {
+    if (IsKeyPressed(KEY_ONE)) {
         setting.searchAlg = algorithm::bfs;
         setting.isSearching = true;
-    DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, RED);
-
     }
-    if (IsKeyPressed(KEY_B)){
+    if (IsKeyPressed(KEY_TWO)) {
         setting.searchAlg = algorithm::dfs;
         setting.isSearching = true;
-    DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, RED);
+    }
 
-    } 
-    // show that enter is now 
-    if (setting.isSearching) { 
-        if (IsKeyPressed(KEY_ENTER)) {
-            setting.currState = State::searching;
-        }
+    DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, GRAY);
+    DrawText("Press 1 and then Enter to run BFS", 1, 1, 30, aColor);
+    DrawText("Press 2 and then Enter to run DFS", 1, 35, 30, bColor);
+
+    if (setting.isSearching && IsKeyPressed(KEY_ENTER)) {
+        setting.currState = State::searching;
     }
 }
 
@@ -96,14 +92,27 @@ void UI::buildingPage(UI_SETTING& setting, search::searchSpace& ss) {
     Color bColor = (setting.bChoice == UI::buildingChoice::goal) ? YELLOW : WHITE;
     Color cColor = (setting.bChoice == UI::buildingChoice::wall) ? YELLOW : WHITE;
 
-    if (IsKeyPressed(KEY_A)) setting.bChoice = UI::buildingChoice::start;
-    if (IsKeyPressed(KEY_B)) setting.bChoice = UI::buildingChoice::goal;
-    if (IsKeyPressed(KEY_C)) setting.bChoice = UI::buildingChoice::wall;
+    if (IsKeyPressed(KEY_ONE)) setting.bChoice = UI::buildingChoice::start;
+    if (IsKeyPressed(KEY_TWO)) setting.bChoice = UI::buildingChoice::goal;
+    if (IsKeyPressed(KEY_THREE)) setting.bChoice = UI::buildingChoice::wall;
 
     DrawRectangle(0, 0, Config::SCREEN_WIDTH + pageOffset, Config::SCREEN_HEIGHT, GRAY);
-    DrawText("1. Press A to add start cell", Config::SCREEN_WIDTH, 1, 30, aColor);
-    DrawText("2. Press B to add goal cell", Config::SCREEN_WIDTH, 35, 30, bColor);
-    DrawText("3. Press C to add start wall", Config::SCREEN_WIDTH, 65, 30, cColor);
+    DrawText("Press 1 to add start cell", Config::SCREEN_WIDTH, 1, 30, aColor);
+    DrawText("Press 2 to add goal cell", Config::SCREEN_WIDTH, 35, 30, bColor);
+    DrawText("Press 3 to add start wall", Config::SCREEN_WIDTH, 65, 30, cColor);
+    DrawText("Press Enter to chose Algorithm", Config::SCREEN_WIDTH, 95, 30, WHITE);
     
+    if (IsKeyPressed(KEY_ENTER)) {
+        setting.currState = State::setting;
+    }
+
+    // logic that actually set up the maze here
+    if (setting.bChoice == UI::buildingChoice::start) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isClickInBounds()) {
+            auto mouseCoord = getCell(GetMousePosition());
+            search::setMaze(ss, mouseCoord, Cell::START);
+        }
+    }
+
     drawMaze(ss);
 }

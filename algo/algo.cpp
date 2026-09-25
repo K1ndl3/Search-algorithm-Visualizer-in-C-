@@ -153,5 +153,20 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
     return {false, "step finished"};
 }
 
+void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
+    if (getNumStartCell(ss) > 1) return;
+    ss.maze[mouseCoord.first][mouseCoord.second] = kind;
+}
+
+int getNumStartCell(searchSpace& ss) {
+    // need a function to switch the start cell if there is more than one start
+    int numCells = 0;
+    for (int row = 0; row < ss.maze.size(); row++) {
+        for (int col = 0; col < ss.maze.size(); col++) {
+            if (ss.maze[row][col] == Cell::START) numCells++;
+        }
+    }
+    return numCells;
+}
 
 }  // namespace search

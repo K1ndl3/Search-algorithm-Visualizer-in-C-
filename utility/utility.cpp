@@ -45,8 +45,15 @@ Color cellColor(MATRIX &maze, Coord coord) {
     }
 }
 
-Coord getCoord(Vector2 mousePos) {
+Coord getCell(Vector2 mousePos) {
     int col = static_cast<int>(mousePos.x) / Config::CELL_SIZE;
     int row = static_cast<int>(mousePos.y) / Config::CELL_SIZE;
     return {row, col};
+}
+
+bool isClickInBounds() {
+    if (!IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) return false;
+    Vector2 mousePos = GetMousePosition();
+    return mousePos.x >= 0 && mousePos.x < Config::SCREEN_WIDTH &&
+           mousePos.y >= 0 && mousePos.y < Config::SCREEN_HEIGHT;
 }

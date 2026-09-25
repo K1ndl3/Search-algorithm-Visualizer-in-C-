@@ -19,7 +19,12 @@ namespace search {
         MATRIX maze;
         Coord startCoord;
         Coord endCoord;
+        int numStartCell;
     };
+
+    int getNumStartCell(searchSpace& ss);
+
+    void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind);
 
     void init(searchSpace& ss, Coord start, MATRIX maze);
     std::pair<bool, std::string> dfsStep(searchSpace& ss);
