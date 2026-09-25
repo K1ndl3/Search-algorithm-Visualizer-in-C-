@@ -73,12 +73,14 @@ std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix) {
 
 
 void init(searchSpace &ss, Coord start, MATRIX maze) {
-    // mark the start as visited
-    ss.visited.insert({start});
-    // push the start coord onto the back (BFS order)
-    ss.q.push_back(start);
-    // set the search state's maze equal to the parameter maze
     ss.maze = maze;
+    ss.startCoord = start;
+    // Seed the frontier only when the maze already has a START cell.
+    // Otherwise building/setMaze will seed once the user places start.
+    if (isValid(start.first, start.second) && maze[start.first][start.second] == Cell::START) {
+        ss.visited.insert(start);
+        ss.q.push_back(start);
+    }
 }
 
 std::pair<bool,std::string> bfsStep(searchSpace& ss) {
@@ -154,19 +156,36 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
 }
 
 void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
-    if (getNumStartCell(ss) > 1) return;
+    if (kind == Cell::START) {
+        auto startCellStatus = getNumStartCell(ss);
+        if (startCellStatus.first >= 1) {
+            ss.maze[startCellStatus.second.first][startCellStatus.second.second] = Cell::EMPTY;
+        }
+        ss.maze[mouseCoord.first][mouseCoord.second] = Cell::START;
+        ss.startCoord = mouseCoord;
+        ss.visited.clear();
+        ss.visited.insert(mouseCoord);
+        ss.q.clear();
+        ss.q.push_back(mouseCoord);
+        return;
+    }
     ss.maze[mouseCoord.first][mouseCoord.second] = kind;
 }
 
-int getNumStartCell(searchSpace& ss) {
+std::pair<int, Coord> getNumStartCell(searchSpace& ss) {
     // need a function to switch the start cell if there is more than one start
+    Coord cell;
     int numCells = 0;
     for (int row = 0; row < ss.maze.size(); row++) {
         for (int col = 0; col < ss.maze.size(); col++) {
-            if (ss.maze[row][col] == Cell::START) numCells++;
+            if (ss.maze[row][col] == Cell::START) {
+                cell = {row, col};
+                numCells++;
+            }
+            if (numCells == 2) cell = {row, col};
         }
     }
-    return numCells;
+    return {numCells, cell};
 }
 
 }  // namespace search

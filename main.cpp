@@ -11,9 +11,9 @@
 
 int main() {
     MATRIX maze(Config::NUM_ROW, std::vector<Cell>(Config::NUM_COL, Cell::EMPTY));
-    maze[0][0] = Cell::START;
     maze[9][9] = Cell::GOAL;
     search::searchSpace ss;
+    // instead of initing start cell here, we can init 
     search::init(ss, {0,0},maze);
 
     UI::run(ss);

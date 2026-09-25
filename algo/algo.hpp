@@ -19,10 +19,11 @@ namespace search {
         MATRIX maze;
         Coord startCoord;
         Coord endCoord;
-        int numStartCell;
+        int numStartCell = 1;
+
     };
 
-    int getNumStartCell(searchSpace& ss);
+    std::pair<int,Coord> getNumStartCell(searchSpace& ss);
 
     void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind);
 
