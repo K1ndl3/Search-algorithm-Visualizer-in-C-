@@ -125,8 +125,8 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
     // if the deque is empty, goal was not reached
     if (ss.q.empty()) return {false, "~goal"};
     // pop_front the top
-    Coord curr = ss.q.front();
     ss.q.pop_front();
+    Coord curr = ss.q.front();
     // set up directional array
     int direction[4][2] = {{-1,0}, {1,0}, {0,1}, {0,-1}};
     // for every direction
@@ -143,13 +143,14 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
                 return {true, "goal"};
             }
             // check if wall
-            if (ss.maze[child.first][child.second] == Cell::WALL) continue;
+            if (ss.maze[child.first][child.second] == Cell::WALL) return {false, "step finished"};;
             // else push onto visited set
             ss.visited.insert({child});
             // change the maze
             ss.maze[child.first][child.second] = Cell::VISITED;
             // push_front onto the queue
             ss.q.push_front(child);
+            return {false, "step finished"};
         }
     }
     return {false, "step finished"};

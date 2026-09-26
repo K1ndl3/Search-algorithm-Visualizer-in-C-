@@ -99,7 +99,7 @@ void UI::buildingPage(UI_SETTING& setting, search::searchSpace& ss) {
     DrawRectangle(0, 0, Config::SCREEN_WIDTH + pageOffset, Config::SCREEN_HEIGHT, GRAY);
     DrawText("Press 1 to add start cell", Config::SCREEN_WIDTH, 1, 30, aColor);
     DrawText("Press 2 to add goal cell", Config::SCREEN_WIDTH, 35, 30, bColor);
-    DrawText("Press 3 to add start wall", Config::SCREEN_WIDTH, 65, 30, cColor);
+    DrawText("Press 3 to add wall cell", Config::SCREEN_WIDTH, 65, 30, cColor);
     DrawText("Press Enter to chose Algorithm", Config::SCREEN_WIDTH, 95, 30, WHITE);
     
     if (IsKeyPressed(KEY_ENTER)) {
@@ -111,6 +111,16 @@ void UI::buildingPage(UI_SETTING& setting, search::searchSpace& ss) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isClickInBounds()) {
             auto mouseCoord = getCell(GetMousePosition());
             search::setMaze(ss, mouseCoord, Cell::START);
+        }
+    } else if (setting.bChoice == UI::buildingChoice::wall) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isClickInBounds()) {
+            auto mouseCoord = getCell(GetMousePosition());
+            search::setMaze(ss, mouseCoord, Cell::WALL);
+        }
+    } else {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isClickInBounds()) {
+            auto mouseCoord = getCell(GetMousePosition());
+            search::setMaze(ss, mouseCoord, Cell::GOAL);
         }
     }
 
