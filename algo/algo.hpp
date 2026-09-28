@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 #include <set>
+#include <queue>
 
 namespace search {
 
@@ -20,7 +21,8 @@ namespace search {
         Coord startCoord;
         Coord endCoord;
         int numStartCell = 1;
-
+        std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap;
+        std::vector<std::vector<Coord>> gCost = std::vector<std::vector<Coord>>(Config::NUM_ROW, std::vector<Coord>(Config::NUM_COL, {0,0}));
     };
 
     std::pair<int,Coord> getNumStartCell(searchSpace& ss, Cell kind);

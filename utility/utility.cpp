@@ -57,3 +57,16 @@ bool isClickInBounds() {
     return mousePos.x >= 0 && mousePos.x < Config::SCREEN_WIDTH &&
            mousePos.y >= 0 && mousePos.y < Config::SCREEN_HEIGHT;
 }
+
+
+int manhattenDistance(Coord start, Coord end) {
+    // we need to create the distance between the start and end coord
+    // distance = |end.x - start.x| + |end.y - start.y|
+    
+    int distance = std::abs(end.first - start.first) + std::abs(end.second - start.second);
+    return distance;
+}
+
+int aStarEval(int currCost, int manhattenDistance) {
+    return currCost + manhattenDistance;
+}

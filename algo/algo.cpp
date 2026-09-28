@@ -170,9 +170,12 @@ std::pair<bool, std::string> aStarStep(searchSpace& ss) {
         // make sure to mark visited and do the parent and do the maze coloring
 
     // TODO:
-    // 1) change the search state to include a min-heap
-    // 2) create a manhatten distance utility function: ({start},{end}) -> int
+    // 1) change the search state to include a min-heap // done
+    // 2) create a manhatten distance utility function: ({start},{end}) -> int // done
     // 3) create an eval function
+    // what is the input to the eval function? // done
+        // we have the current cost and the heuristic from the manhatten distance
+        // that means eval: (currCost, manhattenDistance) -> int
     // 4) create g table to store current cost
 }
 

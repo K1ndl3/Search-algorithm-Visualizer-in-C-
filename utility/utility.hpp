@@ -1,6 +1,7 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
+#include <cmath>
 #include <string>
 #include <utility>
 #include <vector>
@@ -25,5 +26,8 @@ std::vector<Coord> createPath(std::vector<std::vector<Coord>> parent, int gr, in
 Color cellColor(MATRIX& maze, Coord coord);
 Coord getCell(Vector2 mousePos);
 bool isClickInBounds();
+
+int manhattenDistance(Coord start, Coord end);
+int aStarEval(int currCost, int manhattenDistance);
 
 #endif
