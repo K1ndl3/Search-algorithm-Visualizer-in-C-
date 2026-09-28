@@ -11,6 +11,11 @@
 
 namespace search {
 
+    struct Node {
+        int eval_score;
+        Coord curr_cell;
+    }; 
+
     struct searchSpace {
         // BFS: push_back + pop_front; DFS: push_front + pop_front
         std::deque<Coord> q;
@@ -21,8 +26,8 @@ namespace search {
         Coord startCoord;
         Coord endCoord;
         int numStartCell = 1;
-        std::priority_queue<int, std::vector<int>, std::greater<int>> minHeap;
-        std::vector<std::vector<Coord>> gCost = std::vector<std::vector<Coord>>(Config::NUM_ROW, std::vector<Coord>(Config::NUM_COL, {0,0}));
+        std::priority_queue<Node, std::vector<Node>, std::greater<int>> minHeap;
+        std::vector<std::vector<int>> gCost = std::vector<std::vector<int>>(Config::NUM_ROW, std::vector<int>(Config::NUM_COL, 0));
     };
 
     std::pair<int,Coord> getNumStartCell(searchSpace& ss, Cell kind);
