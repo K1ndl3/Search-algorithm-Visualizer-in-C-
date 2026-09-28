@@ -7,7 +7,7 @@ namespace UI {
     enum algorithm {
         dfs,
         bfs,
-        a_start
+        a_star
     };
 
     enum State {

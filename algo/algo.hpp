@@ -23,13 +23,14 @@ namespace search {
 
     };
 
-    std::pair<int,Coord> getNumStartCell(searchSpace& ss);
+    std::pair<int,Coord> getNumStartCell(searchSpace& ss, Cell kind);
 
     void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind);
 
     void init(searchSpace& ss, Coord start, MATRIX maze);
     std::pair<bool, std::string> dfsStep(searchSpace& ss);
     std::pair<bool,std::string> bfsStep(searchSpace& ss);
+    std::pair<bool, std::string> aStarStep(searchSpace& ss);
 
     std::pair<bool, std::vector<Coord>> bfs(MATRIX matrix);
     std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix);

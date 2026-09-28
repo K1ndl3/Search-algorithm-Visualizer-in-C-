@@ -125,8 +125,8 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
     // if the deque is empty, goal was not reached
     if (ss.q.empty()) return {false, "~goal"};
     // pop_front the top
-    ss.q.pop_front();
     Coord curr = ss.q.front();
+    ss.q.pop_front();
     // set up directional array
     int direction[4][2] = {{-1,0}, {1,0}, {0,1}, {0,-1}};
     // for every direction
@@ -143,22 +143,44 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
                 return {true, "goal"};
             }
             // check if wall
-            if (ss.maze[child.first][child.second] == Cell::WALL) return {false, "step finished"};;
+            if (ss.maze[child.first][child.second] == Cell::WALL) continue;
             // else push onto visited set
             ss.visited.insert({child});
             // change the maze
             ss.maze[child.first][child.second] = Cell::VISITED;
             // push_front onto the queue
             ss.q.push_front(child);
-            return {false, "step finished"};
         }
     }
     return {false, "step finished"};
 }
 
+std::pair<bool, std::string> aStarStep(searchSpace& ss) {
+    // to implement A*, we need a accrued cost and heuristic
+    // use a lookup table to associate an index with accrued cost
+        // since every movement is 1, movement to next cell just have +1
+    // use manhatten distance because the coords are easier to add
+
+    // what does A* look like?
+        // so A* use a eval function that adds the current cost to the heuristic for each cell
+    // what data structure does A* use
+        // it keeps a min heap of the eval cost and pop top of the heap for searches
+    // how do we implement a step function for it.
+        // at every step, we pop the top of the heap and add its **valid** children onto the heap
+        // make sure to mark visited and do the parent and do the maze coloring
+
+    // TODO:
+    // 1) change the search state to include a min-heap
+    // 2) create a manhatten distance utility function: ({start},{end}) -> int
+    // 3) create an eval function
+    // 4) create g table to store current cost
+}
+
+
+
 void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
     if (kind == Cell::START) {
-        auto startCellStatus = getNumStartCell(ss);
+        auto startCellStatus = getNumStartCell(ss, Cell::START);
         if (startCellStatus.first >= 1) {
             ss.maze[startCellStatus.second.first][startCellStatus.second.second] = Cell::EMPTY;
         }
@@ -170,16 +192,25 @@ void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
         ss.q.push_back(mouseCoord);
         return;
     }
+    if (kind == Cell::GOAL) {
+        auto startCellStatus = getNumStartCell(ss, Cell::GOAL);
+        if (startCellStatus.first >= 1) {
+            ss.maze[startCellStatus.second.first][startCellStatus.second.second] = Cell::EMPTY;
+        }
+        ss.maze[mouseCoord.first][mouseCoord.second] = Cell::GOAL;
+        ss.endCoord = mouseCoord;
+        return;
+    }
     ss.maze[mouseCoord.first][mouseCoord.second] = kind;
 }
 
-std::pair<int, Coord> getNumStartCell(searchSpace& ss) {
+std::pair<int, Coord> getNumStartCell(searchSpace& ss, Cell kind) {
     // need a function to switch the start cell if there is more than one start
     Coord cell;
     int numCells = 0;
     for (int row = 0; row < ss.maze.size(); row++) {
         for (int col = 0; col < ss.maze.size(); col++) {
-            if (ss.maze[row][col] == Cell::START) {
+            if (ss.maze[row][col] == kind) {
                 cell = {row, col};
                 numCells++;
             }

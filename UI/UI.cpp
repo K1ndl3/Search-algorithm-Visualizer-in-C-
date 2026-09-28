@@ -67,6 +67,8 @@ void UI::drawMaze(search::searchSpace &ss) {
 void UI::settingsPage(UI::UI_SETTING& setting) {
     Color aColor = (setting.isSearching && setting.searchAlg == algorithm::bfs) ? YELLOW : WHITE;
     Color bColor = (setting.isSearching && setting.searchAlg == algorithm::dfs) ? YELLOW : WHITE;
+    Color cColor = (setting.isSearching && setting.searchAlg == algorithm::a_star) ? YELLOW : WHITE;
+
 
     if (IsKeyPressed(KEY_ONE)) {
         setting.searchAlg = algorithm::bfs;
@@ -77,9 +79,16 @@ void UI::settingsPage(UI::UI_SETTING& setting) {
         setting.isSearching = true;
     }
 
+    if (IsKeyPressed(KEY_THREE)) {
+        setting.searchAlg = algorithm::a_star;
+        setting.isSearching= true;
+    }
+
     DrawRectangle(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, GRAY);
     DrawText("Press 1 and then Enter to run BFS", 1, 1, 30, aColor);
     DrawText("Press 2 and then Enter to run DFS", 1, 35, 30, bColor);
+    DrawText("Press 3 and then Enter to run A*", 1, 65, 30, cColor);
+
 
     if (setting.isSearching && IsKeyPressed(KEY_ENTER)) {
         setting.currState = State::searching;
