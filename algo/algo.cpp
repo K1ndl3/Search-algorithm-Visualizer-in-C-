@@ -176,7 +176,13 @@ std::pair<bool, std::string> aStarStep(searchSpace& ss) {
     // what is the input to the eval function? // done
         // we have the current cost and the heuristic from the manhatten distance
         // that means eval: (currCost, manhattenDistance) -> int
-    // 4) create g table to store current cost
+    // 4) create g table to store current cost // done
+
+    if (ss.minHeap.empty()) return {false, "~goal"};
+    int direction[4][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+    // create the child Node
+    // calculate the eval for each child 
+    // loop over all the direction and grab the children cell to put them into the minHeap
 }
 
 
@@ -188,6 +194,7 @@ void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
             ss.maze[startCellStatus.second.first][startCellStatus.second.second] = Cell::EMPTY;
         }
         ss.maze[mouseCoord.first][mouseCoord.second] = Cell::START;
+        ss.startCoord = {mouseCoord.first, mouseCoord.second};
         ss.startCoord = mouseCoord;
         ss.visited.clear();
         ss.visited.insert(mouseCoord);
