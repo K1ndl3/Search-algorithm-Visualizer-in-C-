@@ -29,12 +29,12 @@ std::pair<bool, std::vector<Coord>> bfs(MATRIX matrix) {
             int nc = c + direction[1];
 
             if (isValid(nr, nc) && !visited.count({nr, nc})) {
+                if (matrix[nr][nc] == Cell::WALL) continue;
                 parent[nr][nc] = {r, c};
                 if (matrix[nr][nc] == Cell::GOAL) {
                     auto path = createPath(parent, nr, nc, matrix);
                     return {true, path};
                 }
-                if (matrix[nr][nc] == Cell::WALL) continue;
                 visited.insert({nr, nc});
                 q.push({nr, nc});
             }
