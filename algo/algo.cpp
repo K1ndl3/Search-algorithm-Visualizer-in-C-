@@ -251,7 +251,7 @@ std::pair<int, Coord> getNumStartCell(searchSpace& ss, Cell kind) {
     Coord cell;
     int numCells = 0;
     for (int row = 0; row < ss.maze.size(); row++) {
-        for (int col = 0; col < ss.maze.size(); col++) {
+        for (int col = 0; col < ss.maze[0].size(); col++) {
             if (ss.maze[row][col] == kind) {
                 cell = {row, col};
                 numCells++;
