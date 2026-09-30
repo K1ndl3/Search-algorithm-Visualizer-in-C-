@@ -15,7 +15,7 @@ void printPath(std::vector<Coord> path, std::string type) {
     }
 }
 
-std::vector<Coord> createPath(std::vector<std::vector<Coord>> parent, int gr, int gc, MATRIX& maze) {
+std::vector<Coord> createPath(std::vector<std::vector<Coord>>& parent, int gr, int gc, MATRIX& maze) {
     Coord curr = {gr, gc};
     std::vector<Coord> answer;
     while (curr.first != -1) {
