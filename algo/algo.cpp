@@ -56,13 +56,11 @@ std::pair<bool, std::vector<Coord>> dfs(MATRIX matrix) {
         for (auto direction : dir) {
             Coord child = {curr.first + direction[0], curr.second + direction[1]};
             if (isValid(child.first, child.second) && visited.count(child) < 1) {
+                if (matrix[child.first][child.second] == Cell::WALL) continue;
                 parent[child.first][child.second] = {curr.first, curr.second};
                 if (matrix[child.first][child.second] == Cell::GOAL) {
                     auto answer = createPath(parent, child.first, child.second, matrix);
                     return {true, answer};
-                }
-                if (matrix[child.first][child.second] == Cell::WALL) {
-                    continue;
                 }
                 visited.insert(child);
                 s.push(child);
