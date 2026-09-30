@@ -15,7 +15,14 @@ namespace search {
     struct Node {
         int eval_score;
         Coord curr_cell;
-    }; 
+    };
+
+    // Min-heap ordering: lower eval_score = higher priority
+    struct NodeCompare {
+        bool operator()(const Node& a, const Node& b) const {
+            return a.eval_score > b.eval_score;
+        }
+    };
 
     struct searchSpace {
         // BFS: push_back + pop_front; DFS: push_front + pop_front
@@ -27,7 +34,7 @@ namespace search {
         Coord startCoord;
         Coord endCoord;
         int numStartCell = 1;
-        std::priority_queue<Node, std::vector<Node>, std::greater<int>> minHeap;
+        std::priority_queue<Node, std::vector<Node>, NodeCompare> minHeap;
         std::vector<std::vector<int>> gCost = std::vector<std::vector<int>>(Config::NUM_ROW, std::vector<int>(Config::NUM_COL, std::numeric_limits<int>::max()));
     };
 

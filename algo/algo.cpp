@@ -1,5 +1,6 @@
 #include "algo.hpp"
 
+#include <algorithm>
 #include <queue>
 #include <set>
 #include <stack>
@@ -156,30 +157,50 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
 }
 
 std::pair<bool, std::string> aStarStep(searchSpace& ss) {
-    // to implement A*, we need a accrued cost and heuristic
-    // use a lookup table to associate an index with accrued cost
-        // since every movement is 1, movement to next cell just have +1
-    // use manhatten distance because the coords are easier to add
-
-    // what does A* look like?
-        // so A* use a eval function that adds the current cost to the heuristic for each cell
-    // what data structure does A* use
-        // it keeps a min heap of the eval cost and pop top of the heap for searches
-    // how do we implement a step function for it.
-        // at every step, we pop the top of the heap and add its **valid** children onto the heap
-        // make sure to mark visited and do the parent and do the maze coloring
-
-    // TODO:
-    // 1) change the search state to include a min-heap // done
-    // 2) create a manhatten distance utility function: ({start},{end}) -> int // done
-    // 3) create an eval function
-    // what is the input to the eval function? // done
-        // we have the current cost and the heuristic from the manhatten distance
-        // that means eval: (currCost, manhattenDistance) -> int
-    // 4) create g table to store current cost // done
+    
 
     if (ss.minHeap.empty()) return {false, "~goal"};
+    Node curr = ss.minHeap.top();
+    int r = curr.curr_cell.first;
+    int c = curr.curr_cell.second;
+
+    ss.minHeap.pop();
+    // we have already visited
+    if (ss.visited.count(curr.curr_cell) > 0) {
+        return {false, "step finished"};
+    }
+    // no need to check for wall since the wall children are never added in the min heap
+    ss.visited.insert(curr.curr_cell);
+    if (ss.maze[r][c] != Cell::GOAL && ss.maze[r][c] != Cell::START) {
+        ss.maze[r][c] = Cell::VISITED;
+    } 
+
+    // if we reached our goal, make sure you recreate the paths and then return true, goal
+    if (ss.maze[r][c] == Cell::GOAL) {
+        createPath(ss.parent, ss.endCoord.first, ss.endCoord.second,  ss.maze);
+        return {true, "goal"};
+    }
+
     int direction[4][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+    for (auto dir : direction) {
+        Node child = {0,{r + dir[0], c + dir[1]}};
+        int nr = child.curr_cell.first;
+        int nc = child.curr_cell.second;
+        if (ss.visited.count(child.curr_cell) > 0) {
+            continue;;
+        }
+        int storedGCost = ss.gCost[nr][nc];
+        // if path is not efficient
+        if (storedGCost >= ss.gCost[r][c] + 1) {
+            continue;
+        }
+        ss.gCost[nr][nc] = storedGCost;
+        ss.parent[nr][nc] = {r,c};
+        int h = manhattenDistance({nr,nc}, ss.endCoord);
+        int f = storedGCost + h;
+        ss.minHeap.push({f,{nr,nc}});
+    }
+    return {false, "step finished"};
     // create the child Node
     // calculate the eval for each child 
     // loop over all the direction and grab the children cell to put them into the minHeap
