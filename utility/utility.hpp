@@ -30,4 +30,7 @@ bool isClickInBounds();
 int manhattenDistance(Coord start, Coord end);
 int aStarEval(int currCost, int manhattenDistance);
 
+// helper functions
+void clearParent(std::vector<std::vector<Coord>>& parent);
+
 #endif

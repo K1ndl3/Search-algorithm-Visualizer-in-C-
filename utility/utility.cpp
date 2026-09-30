@@ -70,3 +70,15 @@ int manhattenDistance(Coord start, Coord end) {
 int aStarEval(int currCost, int manhattenDistance) {
     return currCost + manhattenDistance;
 }
+
+void clearParent(std::vector<std::vector<Coord>>& parent) {
+    int numRow = parent.size();
+    int numCol = parent[0].size();
+    Coord resetVal = {-1,-1};
+    for (int r = 0; r < numRow; r++) {
+        for (int c = 0; c < numCol; c++) {
+            parent[r][c] = resetVal;
+        }
+    }
+}
+

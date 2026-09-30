@@ -208,6 +208,7 @@ void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
         ss.startCoord = mouseCoord;
         ss.visited.clear();
         ss.visited.insert(mouseCoord);
+        clearParent(ss.parent);
         ss.q.clear();
         ss.q.push_back(mouseCoord);
 
