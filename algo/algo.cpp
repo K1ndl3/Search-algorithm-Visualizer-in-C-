@@ -157,53 +157,45 @@ std::pair<bool, std::string> dfsStep(searchSpace& ss) {
 }
 
 std::pair<bool, std::string> aStarStep(searchSpace& ss) {
-    
-
     if (ss.minHeap.empty()) return {false, "~goal"};
+
     Node curr = ss.minHeap.top();
+    ss.minHeap.pop();
     int r = curr.curr_cell.first;
     int c = curr.curr_cell.second;
 
-    ss.minHeap.pop();
-    // we have already visited
-    if (ss.visited.count(curr.curr_cell) > 0) {
+    // Start is pre-inserted into visited for BFS/DFS; allow it through once for A*.
+    if (ss.visited.count(curr.curr_cell) > 0 && curr.curr_cell != ss.startCoord) {
         return {false, "step finished"};
     }
-    // no need to check for wall since the wall children are never added in the min heap
+
     ss.visited.insert(curr.curr_cell);
     if (ss.maze[r][c] != Cell::GOAL && ss.maze[r][c] != Cell::START) {
         ss.maze[r][c] = Cell::VISITED;
-    } 
+    }
 
-    // if we reached our goal, make sure you recreate the paths and then return true, goal
     if (ss.maze[r][c] == Cell::GOAL) {
-        createPath(ss.parent, ss.endCoord.first, ss.endCoord.second,  ss.maze);
+        createPath(ss.parent, r, c, ss.maze);
         return {true, "goal"};
     }
 
-    int direction[4][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}};
+    int direction[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     for (auto dir : direction) {
-        Node child = {0,{r + dir[0], c + dir[1]}};
-        int nr = child.curr_cell.first;
-        int nc = child.curr_cell.second;
-        if (ss.visited.count(child.curr_cell) > 0) {
-            continue;;
-        }
-        int storedGCost = ss.gCost[nr][nc];
-        // if path is not efficient
-        if (storedGCost >= ss.gCost[r][c] + 1) {
-            continue;
-        }
-        ss.gCost[nr][nc] = storedGCost;
-        ss.parent[nr][nc] = {r,c};
-        int h = manhattenDistance({nr,nc}, ss.endCoord);
-        int f = storedGCost + h;
-        ss.minHeap.push({f,{nr,nc}});
+        int nr = r + dir[0];
+        int nc = c + dir[1];
+        if (!isValid(nr, nc) || ss.visited.count({nr, nc}) > 0) continue;
+        if (ss.maze[nr][nc] == Cell::WALL) continue;
+
+        int newG = ss.gCost[r][c] + 1;
+        if (newG >= ss.gCost[nr][nc]) continue;
+
+        ss.gCost[nr][nc] = newG;
+        ss.parent[nr][nc] = {r, c};
+        int h = manhattenDistance({nr, nc}, ss.endCoord);
+        int f = newG + h;
+        ss.minHeap.push({f, {nr, nc}});
     }
     return {false, "step finished"};
-    // create the child Node
-    // calculate the eval for each child 
-    // loop over all the direction and grab the children cell to put them into the minHeap
 }
 
 
@@ -215,12 +207,20 @@ void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
             ss.maze[startCellStatus.second.first][startCellStatus.second.second] = Cell::EMPTY;
         }
         ss.maze[mouseCoord.first][mouseCoord.second] = Cell::START;
-        ss.startCoord = {mouseCoord.first, mouseCoord.second};
         ss.startCoord = mouseCoord;
         ss.visited.clear();
         ss.visited.insert(mouseCoord);
         ss.q.clear();
         ss.q.push_back(mouseCoord);
+
+        // Seed A* frontier
+        ss.minHeap = {};
+        for (auto& row : ss.gCost) {
+            std::fill(row.begin(), row.end(), std::numeric_limits<int>::max());
+        }
+        ss.gCost[mouseCoord.first][mouseCoord.second] = 0;
+        int h = manhattenDistance(mouseCoord, ss.endCoord);
+        ss.minHeap.push({h, mouseCoord});
         return;
     }
     if (kind == Cell::GOAL) {
@@ -230,6 +230,18 @@ void setMaze(searchSpace& ss, Coord mouseCoord, Cell kind) {
         }
         ss.maze[mouseCoord.first][mouseCoord.second] = Cell::GOAL;
         ss.endCoord = mouseCoord;
+
+        // Refresh A* start entry with updated heuristic
+        if (isValid(ss.startCoord.first, ss.startCoord.second) &&
+            ss.maze[ss.startCoord.first][ss.startCoord.second] == Cell::START) {
+            ss.minHeap = {};
+            for (auto& row : ss.gCost) {
+                std::fill(row.begin(), row.end(), std::numeric_limits<int>::max());
+            }
+            ss.gCost[ss.startCoord.first][ss.startCoord.second] = 0;
+            int h = manhattenDistance(ss.startCoord, ss.endCoord);
+            ss.minHeap.push({h, ss.startCoord});
+        }
         return;
     }
     ss.maze[mouseCoord.first][mouseCoord.second] = kind;

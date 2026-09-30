@@ -11,13 +11,6 @@ void UI::run(search::searchSpace& ss) {
 
         BeginDrawing();
 
-        // create a switch case:
-            // setting state
-                // draw the setting screen
-                // building state
-                // set the goal, start, and walls
-                // searching state
-                // searching alg will run
                 
         ClearBackground(BLACK);
         if (uiSetting.currState == State::setting) {
@@ -36,8 +29,7 @@ void UI::run(search::searchSpace& ss) {
                 } else if (uiSetting.searchAlg == algorithm::dfs) {
                     res = search::dfsStep(ss);
                 } else {
-                    // do nothing for now
-                    continue;
+                    res = search::aStarStep(ss);
                 }
                 if (res.first || res.second == "~goal") {
                     if (res.second == "~goal")
